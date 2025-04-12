@@ -1,5 +1,7 @@
 package com.olx.inventories.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,6 +29,16 @@ public class Inventory {
     private String attribute;
     @Column
     private String status;
-
-
+    public void setAttribute(JsonNode attribute) {
+        try{
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readTree(this.attribute);
+        }
+        catch (Exception e){
+            throw new RuntimeException("unable to ");
+        }
+    }
+    public void setStatus() {
+        this.status = ItemStatus.CREATED.toString();
+    }
 }
