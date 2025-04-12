@@ -1,4 +1,4 @@
-package com.olx.inventories;
+package com.olx.inventories.repository;
 
 import com.olx.inventories.model.Inventory;
 import org.springframework.data.jpa.repository.JpaRepository;
