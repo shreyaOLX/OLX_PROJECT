@@ -20,9 +20,10 @@ public class InventoryValidator {
             return new ResponseEntity<>(item.getType() + " is not a valid type of item", HttpStatus.FORBIDDEN);
         }
 
-        if (item.getLocation().matches("[a-zA-Z,]+")) {
+        if (!item.getLocation().matches("[a-zA-Z, /]+")) {
             return new ResponseEntity<>("Invalid Location", HttpStatus.BAD_REQUEST);
         }
+
 
         if (item.getCostPrice() <= 0 || item.getSellingPrice() <= 0) {
             return new ResponseEntity<>("Invalid Cost Price", HttpStatus.BAD_REQUEST);
