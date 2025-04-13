@@ -1,110 +1,124 @@
 package com.olx.inventories.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.olx.inventories.Enum.ItemType;
 import com.olx.inventories.model.Inventory;
-import com.olx.inventories.repository.InventoryRepository;
 import com.olx.inventories.util.InventoryValidator;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-class InventoryServiceTest {
-    private InventoryRepository repository;
-    private InventoryValidator validator;
-    private ObjectMapper objectMapper;
-    private InventoryServiceImplementation service;
+class InventoryValidatorTest {
+    private InventoryValidator inventoryValidator;
 
     @BeforeEach
     void setUp() {
-        repository = mock(InventoryRepository.class);
-        validator = mock(InventoryValidator.class);
-        objectMapper = new ObjectMapper();
-        service = new InventoryServiceImplementation(repository, objectMapper, validator);
+        inventoryValidator = new InventoryValidator();
     }
 
-
     @Test
-    void createAndCheckInInventory() {
+    void returnNullWhenInventoryIsValid() {
+        // Arrange
         Inventory inventory = new Inventory();
-        inventory.setType("car");
+        inventory.setType(ItemType.CAR.name());
         inventory.setLocation("Delhi");
-        inventory.setCostPrice(100000L);
-        inventory.setSellingPrice(150000L);
-        inventory.setAttribute("{\"color\":\"red\"}");
+        inventory.setCostPrice(800000L);
+        inventory.setSellingPrice(9000000L);
+        inventory.setAttribute("""
+                {
+                "VIN" : "UP38XX0001",
+                "make" : "Toyota",
+                "model" : "Fortuner",
+                "year" : "2023"
+                }
+                """);
         inventory.setStatus("CREATED");
-        ResponseEntity<String> response = service.create(inventory);
-        assertEquals(200, response.getStatusCode().value());
+
+        // Act
+        ResponseEntity<String> response = inventoryValidator.validate(inventory);
+
+        // Assert
+        assertNull(response);
     }
 
     @Test
-    void getAll() {
-        List<Inventory> inventories = new ArrayList<>();
-        Inventory inventory1 = new Inventory();
-        inventory1.setId(1L);
-        inventory1.setType("car");
-        Inventory inventory2 = new Inventory();
-        inventory2.setId(2L);
-        inventory2.setType("bike");
-        inventories.add(inventory1);
-        inventories.add(inventory2);
-
-        when(repository.findAll()).thenReturn(inventories);
-        ResponseEntity<String> response = service.getAll();
-
-        assertEquals(200, response.getStatusCode().value());
-        assertNotNull(response.getBody());
-        verify(repository).findAll();
-
-    }
-
-    @Test
-    void get() {
-        Long id = 1L;
+    void returnErrorForInvalidType() {
+        // Arrange
         Inventory inventory = new Inventory();
-        inventory.setId(id);
+        inventory.setType("InvalidType");
+        inventory.setLocation("Prayagraj");
+        inventory.setCostPrice(100000L);
+        inventory.setSellingPrice(200000L);
+        inventory.setAttribute("{\"VIN\":\"UP38HG0001\"}");
+        inventory.setStatus("CREATED");
 
-        when(repository.findById(id)).thenReturn(Optional.of(inventory));
+        // Act
+        ResponseEntity<String> response = inventoryValidator.validate(inventory);
 
-        ResponseEntity<String> response = service.get(id);
-        assertEquals(200, response.getStatusCode().value());
-
+        // Assert
+        assertNotNull(response);
+        assertTrue(response.getBody().contains("not a valid type"));
+        assertEquals(403, response.getStatusCode().value());
     }
 
     @Test
-    void getPage() {
-        List<Inventory> inventories = new ArrayList<>();
-        inventories.add(new Inventory());
-        Page<Inventory> page = new PageImpl<>(inventories);
-        Pageable pageable = mock(Pageable.class);
-
-        when(repository.findAll(pageable)).thenReturn(page);
-
-        Page<Inventory> result = service.getPage(pageable);
-        assertEquals(1, result.getContent().size());
-
-    }
-
-    @Test
-    void delete() {
-        Long id = 1L;
+    void returnErrorForInvalidAttributeJson() {
+        // Arrange
         Inventory inventory = new Inventory();
-        inventory.setId(id);
+        inventory.setType(ItemType.CAR.name());
+        inventory.setLocation("Delhi / South");
+        inventory.setCostPrice(100000L);
+        inventory.setSellingPrice(200000L);
+        inventory.setAttribute("invalid-json");
+        inventory.setStatus("CREATED");
 
-        when(repository.findById(id)).thenReturn(Optional.of(inventory));
+        // Act
+        ResponseEntity<String> response = inventoryValidator.validate(inventory);
 
-        ResponseEntity<String> response = service.delete(id);
-        assertEquals(200, response.getStatusCode().value());
+        // Assert
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCode().value());
+        assertTrue(response.getBody().contains("Invalid attribute JSON"));
+    }
 
+    @Test
+    void returnErrorForInvalidStatus() {
+        // Arrange
+        Inventory inventory = new Inventory();
+        inventory.setType(ItemType.CAR.name());
+        inventory.setLocation("Delhi / North");
+        inventory.setCostPrice(100000L);
+        inventory.setSellingPrice(200000L);
+        inventory.setAttribute("{\"VIN\":\"UP38HG0001\"}");
+        inventory.setStatus("DELIVERED");
+
+        // Act
+        ResponseEntity<String> response = inventoryValidator.validate(inventory);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCode().value());
+        assertTrue(response.getBody().contains("Invalid status"));
+    }
+
+    @Test
+    void returnErrorForNegativePrices() {
+        // Arrange
+        Inventory inventory = new Inventory();
+        inventory.setType(ItemType.CAR.name());
+        inventory.setLocation("Delhi");
+        inventory.setCostPrice(-10000L);
+        inventory.setSellingPrice(-20000L);
+        inventory.setAttribute("{\"VIN\":\"UP38HG0001\"}");
+        inventory.setStatus("CREATED");
+
+        // Act
+        ResponseEntity<String> response = inventoryValidator.validate(inventory);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCode().value());
+        assertFalse(response.getBody().contains("Prices cannot be negative"));
     }
 }
