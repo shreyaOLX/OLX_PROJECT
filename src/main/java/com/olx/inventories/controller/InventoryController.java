@@ -3,7 +3,6 @@ package com.olx.inventories.controller;
 import com.olx.inventories.model.Inventory;
 import com.olx.inventories.service.InventoryService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/inventories")
 public class InventoryController {
 
-    @Autowired
-    private InventoryService inventoryService;
+    private final InventoryService inventoryService;
+
+    public InventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
+    }
 
 
     @GetMapping("/")
@@ -28,8 +30,8 @@ public class InventoryController {
         return inventoryService.get(id);
     }
 
-    @Value("${inventory.items-per-page:10}")
-    private int itemOnEachPage;
+    @Value(value = "${inventory.items-per-page:10}")
+
 
     @GetMapping("/items")
     public ResponseEntity<Page<Inventory>> getByPage(@RequestParam(defaultValue = "0") int pageNum) {
@@ -66,7 +68,9 @@ public class InventoryController {
     }
 
     @PatchMapping("/updatePricing/{id}")
-    public ResponseEntity<String> updatePricing(@PathVariable Long id, @RequestParam(required = false) long costPrice, @RequestParam(required = false) long sellingPrice) {
+    public ResponseEntity<String> updatePricing(@PathVariable Long id,
+                                                @RequestParam(required = false) long costPrice,
+                                                @RequestParam(required = false) long sellingPrice) {
         return inventoryService.updatePricing(id, costPrice, sellingPrice);
     }
 
