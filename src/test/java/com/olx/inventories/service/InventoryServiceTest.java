@@ -7,10 +7,17 @@ import com.olx.inventories.util.InventoryValidator;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-import static org.mockito.Mockito.mock;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class InventoryServiceTest {
     private InventoryRepository repository;
@@ -23,8 +30,9 @@ class InventoryServiceTest {
         repository = mock(InventoryRepository.class);
         validator = mock(InventoryValidator.class);
         objectMapper = new ObjectMapper();
-        service = new InventoryServiceImplementation(repository,objectMapper,validator);
+        service = new InventoryServiceImplementation(repository, objectMapper, validator);
     }
+
 
     @Test
     void createAndCheckInInventory() {
@@ -41,33 +49,62 @@ class InventoryServiceTest {
 
     @Test
     void getAll() {
+        List<Inventory> inventories = new ArrayList<>();
+        Inventory inventory1 = new Inventory();
+        inventory1.setId(1L);
+        inventory1.setType("car");
+        Inventory inventory2 = new Inventory();
+        inventory2.setId(2L);
+        inventory2.setType("bike");
+        inventories.add(inventory1);
+        inventories.add(inventory2);
+
+        when(repository.findAll()).thenReturn(inventories);
+        ResponseEntity<String> response = service.getAll();
+
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        verify(repository).findAll();
+
     }
 
     @Test
     void get() {
+        Long id = 1L;
+        Inventory inventory = new Inventory();
+        inventory.setId(id);
+
+        when(repository.findById(id)).thenReturn(Optional.of(inventory));
+
+        ResponseEntity<String> response = service.get(id);
+        assertEquals(200, response.getStatusCode().value());
+
     }
 
     @Test
     void getPage() {
-    }
+        List<Inventory> inventories = new ArrayList<>();
+        inventories.add(new Inventory());
+        Page<Inventory> page = new PageImpl<>(inventories);
+        Pageable pageable = mock(Pageable.class);
 
-    @Test
-    void updateInventory() {
-    }
+        when(repository.findAll(pageable)).thenReturn(page);
 
-    @Test
-    void updateStatus() {
-    }
+        Page<Inventory> result = service.getPage(pageable);
+        assertEquals(1, result.getContent().size());
 
-    @Test
-    void updatePricing() {
-    }
-
-    @Test
-    void updateAttribute() {
     }
 
     @Test
     void delete() {
+        Long id = 1L;
+        Inventory inventory = new Inventory();
+        inventory.setId(id);
+
+        when(repository.findById(id)).thenReturn(Optional.of(inventory));
+
+        ResponseEntity<String> response = service.delete(id);
+        assertEquals(200, response.getStatusCode().value());
+
     }
 }
