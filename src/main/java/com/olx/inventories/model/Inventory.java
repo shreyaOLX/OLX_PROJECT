@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.olx.inventories.Enum.ItemStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Setter;
 
 @Data
 @Entity
@@ -27,13 +28,12 @@ public class Inventory {
     private String creationDate;
     @Column
     private String lastUpdateDate;
+    @Setter
     @Column
     private String attribute;
     @Column
     private String status;
-    public void setAttribute(String attribute) {
-        this.attribute = attribute;
-    }
+
     public JsonNode getParsedAttribute() {
         try{
             ObjectMapper objectMapper = new ObjectMapper();
@@ -45,5 +45,9 @@ public class Inventory {
     }
     public void setStatus() {
         this.status = ItemStatus.CREATED.toString();
+    }
+
+    public void setLastUpdatedDate(String s) {
+        this.lastUpdateDate = s;
     }
 }

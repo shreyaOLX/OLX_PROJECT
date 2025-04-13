@@ -19,25 +19,29 @@ import java.util.Optional;
 @Service
 public class InventoryServiceImplementation implements InventoryService {
 
-    @Autowired
-    private InventoryRepository repository;
+    private final InventoryRepository repository;
 
-    @Autowired
+    private final InventoryValidator validator;
+
     private ObjectMapper objectMapper;
 
     @Autowired
-    private InventoryValidator validator;
+    public InventoryServiceImplementation(InventoryRepository repository,
+                                          ObjectMapper objectMapper,
+                                          InventoryValidator validator) {
+        this.repository = repository;
+        this.validator = validator;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public ResponseEntity<String> create(Inventory item) {
-        // Validate first
         ResponseEntity<String> checkValidity = validator.validate(item);
         if (checkValidity != null) return checkValidity;
 
-        // Set dates and status
         item.setCreationDate(setTodayDateTime());
         item.setLastUpdatedDate(setTodayDateTime());
-        item.setStatus(); // or item.setStatus("CREATED") if that's your default
+        item.setStatus();
 
         try {
             repository.save(item);
@@ -48,4 +52,51 @@ public class InventoryServiceImplementation implements InventoryService {
         String response = "{id: " + item.getId() + ", status: 200}";
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<String> getAll() {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<String> get(Long id) {
+        return null;
+    }
+
+    @Override
+    public Page<Inventory> getPage(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<String> updateInventory(Long id, Inventory item) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<String> updateStatus(Long id, String status) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<String> updatePricing(Long id, Long costPrice, Long sellingPrice) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<String> updateAttribute(Long id, String attribute) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<String> delete(Long id) {
+        return null;
+    }
+
+    /// Helping Methods
+
+    private String setTodayDateTime() {
+        return LocalDateTime.now().toString();
+    }
+
 }
