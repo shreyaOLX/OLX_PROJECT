@@ -71,4 +71,10 @@ public class InventoryController {
         return inventoryService.updatePricing(id, costPrice, sellingPrice);
     }
 
+    @PatchMapping("/updateAttribute/{id}")
+    public ResponseEntity<String> updateAttribute(@PathVariable Long id, @RequestBody String attribute) {
+        return inventoryService.updateAttribute(id, attribute);
+    }
+
+
 }
