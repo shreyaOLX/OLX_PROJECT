@@ -33,6 +33,18 @@ class InventoryValidatorTest {
         ResponseEntity<String> response = inventoryValidator.validate(inventory);
         assertNull(response);
     }
+    @Test
+    void returnErrorForInvalidType() {
+        Inventory inventory = new Inventory();
+        inventory.setType("InvalidType"); // this must not match anything in ItemType
+        inventory.setLocation("Noida");
+        inventory.setCostPrice(100000L);
+        inventory.setSellingPrice(200000L);
+        inventory.setAttribute("{\"VIN\":\"UP38HG0001\"}");
+        inventory.setStatus("CREATED");
+        ResponseEntity<String> response = inventoryValidator.validate(inventory);
+        assertTrue(response.getStatusCode().is4xxClientError());
+    }
 
 
 }
