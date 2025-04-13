@@ -32,5 +32,22 @@ class InventoryTest {
         inventory.setStatus();
         assertEquals(inventory.getStatus(), "CREATED");
     }
+    @Test
+    void setAndGetAllBasicField(){
+        Inventory inventory = new Inventory();
+        inventory.setVIN("UP38HG0001");
+        inventory.setLocation("Gurgaon");
+        inventory.setCreatedBy("olx");
+        inventory.setType("car");
+        inventory.setCostPrice(100000L);
+        inventory.setSellingPrice(150000L);
+
+        assertEquals("UP38HG0001", inventory.getVIN());
+        assertEquals("Gurgaon", inventory.getLocation());
+        assertEquals("olx", inventory.getCreatedBy());
+        assertEquals("car", inventory.getType());
+        assertEquals(100000L, inventory.getCostPrice());
+        assertEquals(150000L, inventory.getSellingPrice());
+    }
 
 }
