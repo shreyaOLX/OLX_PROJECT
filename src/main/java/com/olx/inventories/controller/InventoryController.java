@@ -48,10 +48,8 @@ public class InventoryController {
     }
 
     @PostMapping("/create")
-    private ResponseEntity<String> createInventory(@RequestBody Inventory item){
-
+    public ResponseEntity<String> createInventory(@RequestBody Inventory item){
         return inventoryService.create(item);
-
     }
 
 
