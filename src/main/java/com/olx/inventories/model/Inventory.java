@@ -1,4 +1,5 @@
 package com.olx.inventories.model;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.olx.inventories.Enum.ItemStatus;
@@ -37,14 +38,14 @@ public class Inventory {
     private String status;
 
     public JsonNode getParsedAttribute() {
-        try{
+        try {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readTree(this.attribute);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Unable to parse attribute JSON", e);
         }
     }
+
     public void setStatus() {
         this.status = ItemStatus.CREATED.toString();
     }
