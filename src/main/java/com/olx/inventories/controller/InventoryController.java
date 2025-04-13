@@ -34,23 +34,22 @@ public class InventoryController {
     @GetMapping("/items")
     public ResponseEntity<Page<Inventory>> getByPage(@RequestParam(defaultValue = "0") int pageNum) {
         try {
-            Pageable pageable = PageRequest.of(pageNum, 10);  // 10 can be the number of items per page
+            Pageable pageable = PageRequest.of(pageNum, 10);
             Page<Inventory> page = inventoryService.getPage(pageable);
 
             if (page.isEmpty()) {
-                return ResponseEntity.notFound().build();  // Optional, if you want to handle empty pages
+                return ResponseEntity.notFound().build();
             }
-
             return ResponseEntity.ok(page);
+
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
     }
 
 
-
     @PostMapping("/create")
-    public ResponseEntity<String> createInventory(@RequestBody Inventory item){
+    public ResponseEntity<String> createInventory(@RequestBody Inventory item) {
         return inventoryService.create(item);
     }
 
@@ -77,7 +76,7 @@ public class InventoryController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteInventory(@PathVariable Long id){
+    public ResponseEntity<String> deleteInventory(@PathVariable Long id) {
         return inventoryService.delete(id);
 
     }
