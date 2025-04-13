@@ -64,4 +64,17 @@ public class InventoryControllerTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals("Created", response.getBody());
     }
+
+    @Test
+    public void testGetByPage() {
+        Page<Inventory> page = new PageImpl<>(Collections.singletonList(inventory));
+
+        when(inventoryService.getPage(any(PageRequest.class))).thenReturn(page);
+
+        ResponseEntity<Page<Inventory>> response = inventoryController.getByPage(0);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertFalse(response.getBody().isEmpty());
+    }
 }
