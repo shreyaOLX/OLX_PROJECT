@@ -59,7 +59,7 @@ class InventoryValidatorTest {
         ResponseEntity<String> response = inventoryValidator.validate(inventory);
         assertNotNull(response);
         assertEquals(400, response.getStatusCodeValue());
-        assertEquals("Invalid JSON attribute", response.getBody());
+        assertEquals("Invalid attribute JSON", response.getBody());
     }
     @Test
     void returnErrorForInvalidStatus() {
