@@ -6,7 +6,6 @@ import com.olx.inventories.Enum.ItemStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
 @Data
