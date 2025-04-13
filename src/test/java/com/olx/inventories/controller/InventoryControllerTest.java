@@ -56,7 +56,7 @@ public class InventoryControllerTest {
 
     @Test
     public void testCreateInventory() {
-        when(inventoryService.create(any())).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body("Created"));
+        when(inventoryService.create(eq(inventory))).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body("Created"));
 
         ResponseEntity<String> response = inventoryController.createInventory(inventory);
 
@@ -68,18 +68,17 @@ public class InventoryControllerTest {
     public void testGetByPage() {
         Page<Inventory> page = new PageImpl<>(Collections.singletonList(inventory));
 
-        when(inventoryService.getPage(any(PageRequest.class))).thenReturn(page);
+        when(inventoryService.getPage(eq(PageRequest.of(0, 10)))).thenReturn(page);
 
         ResponseEntity<Page<Inventory>> response = inventoryController.getByPage(0);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-
         assertFalse(response.getBody().isEmpty());
     }
 
     @Test
     public void testUpdateInventory() {
-        when(inventoryService.updateInventory(eq(1L), any())).thenReturn(ResponseEntity.ok("Updated"));
+        when(inventoryService.updateInventory(eq(1L), eq(inventory))).thenReturn(ResponseEntity.ok("Updated"));
 
         ResponseEntity<String> response = inventoryController.updateInventory(1L, inventory);
 
@@ -96,5 +95,4 @@ public class InventoryControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Deleted", response.getBody());
     }
-
 }
