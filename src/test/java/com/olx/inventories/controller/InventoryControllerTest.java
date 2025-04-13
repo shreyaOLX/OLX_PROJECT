@@ -87,4 +87,15 @@ public class InventoryControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Updated", response.getBody());
     }
+
+    @Test
+    public void testDeleteInventory() {
+        when(inventoryService.delete(1L)).thenReturn(ResponseEntity.ok("Deleted"));
+
+        ResponseEntity<String> response = inventoryController.deleteInventory(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Deleted", response.getBody());
+    }
+
 }
