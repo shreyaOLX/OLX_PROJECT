@@ -26,5 +26,11 @@ class InventoryTest {
         assertEquals("Civic", parsed.get("model").asText());
         assertEquals("2023", parsed.get("year").asText());
     }
+    @Test
+    void setStatus() {
+        Inventory inventory = new Inventory();
+        inventory.setStatus();
+        assertEquals(inventory.getStatus(), "CREATED");
+    }
 
 }
