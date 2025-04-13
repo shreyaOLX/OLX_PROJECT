@@ -14,11 +14,13 @@ public class InventoryValidator {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public ResponseEntity<String> validate(Inventory item) {
+
+        ///Basic validation checks
         if (!validType(item.getType())) {
             return new ResponseEntity<>(item.getType() + " is not a valid type of item", HttpStatus.FORBIDDEN);
         }
 
-        if (!item.getLocation().matches("[a-zA-Z]+")) {
+        if (item.getLocation().matches("[a-zA-Z,]+")) {
             return new ResponseEntity<>("Invalid Location", HttpStatus.BAD_REQUEST);
         }
 
@@ -26,11 +28,11 @@ public class InventoryValidator {
             return new ResponseEntity<>("Invalid Cost Price", HttpStatus.BAD_REQUEST);
         }
 
-        // Validate attribute JSON
+        /// Validate attribute JSON
         JsonNode jsonNode = null;
         if (item.getAttribute() != null) {
             try {
-                jsonNode = objectMapper.readTree(item.getAttribute().toString());
+                jsonNode = objectMapper.readTree(item.getAttribute());
             } catch (Exception e) {
                 return new ResponseEntity<>("Invalid attribute JSON", HttpStatus.BAD_REQUEST);
             }
@@ -40,10 +42,8 @@ public class InventoryValidator {
         }
 
         String status = item.getStatus();
-        if (!"CREATED".equalsIgnoreCase(status) &&
-                !"BOOKED".equalsIgnoreCase(status) &&
-                !"SOLD".equalsIgnoreCase(status)) {
-            return new ResponseEntity<>("Invalid status. Status can only be BOOKED or SOLD.", HttpStatus.BAD_REQUEST);
+        if (!"CREATED".equalsIgnoreCase(status) && !"PROCURED".equalsIgnoreCase(status) && !"SOLD".equalsIgnoreCase(status)) {
+            return new ResponseEntity<>("Invalid status. Status can only be PROCURED or SOLD.", HttpStatus.BAD_REQUEST);
         }
 
         return null;
