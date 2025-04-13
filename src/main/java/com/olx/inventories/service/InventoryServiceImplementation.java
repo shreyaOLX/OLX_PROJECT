@@ -91,17 +91,75 @@ public class InventoryServiceImplementation implements InventoryService {
 
     @Override
     public ResponseEntity<String> updateInventory(Long id, Inventory item) {
-        return null;
+        if (id == null || id <= 0) {
+            return new ResponseEntity<>("Invalid ID. ID must be greater than 0.", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Inventory> existingItemOptional = repository.findById(id);
+
+        if (existingItemOptional.isPresent()) {
+            Inventory existingItem = existingItemOptional.get();
+
+            ResponseEntity<String> response = validator.validate(item);
+            if (response != null) return response;
+
+            existingItem.setType(item.getType());
+            existingItem.setLocation(item.getLocation());
+            existingItem.setCostPrice(item.getCostPrice());
+            existingItem.setSellingPrice(item.getSellingPrice());
+            existingItem.setLastUpdatedDate();
+            existingItem.setAttribute(item.getAttribute());
+            existingItem.setStatus();
+
+            repository.save(existingItem);
+            return new ResponseEntity<>("Item updated", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Item not found", HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
     public ResponseEntity<String> updateStatus(Long id, String status) {
-        return null;
+        if (!"PROCURED".equalsIgnoreCase(status) && !"SOLD".equalsIgnoreCase(status)) {
+            return new ResponseEntity<>("Invalid status. Status can only be PROCURED or SOLD.", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Inventory> existingItemOptional = repository.findById(id);
+        if (existingItemOptional.isEmpty()) {
+            return new ResponseEntity<>("Item not found", HttpStatus.NOT_FOUND);
+        }
+
+        Inventory existingItem = existingItemOptional.get();
+        existingItem.setStatus(status);
+        existingItem.setLastUpdatedDate();
+
+        try {
+            repository.save(existingItem);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+
+        return new ResponseEntity<>("Status updated", HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<String> updatePricing(Long id, Long costPrice, Long sellingPrice) {
-        return null;
+        if ((costPrice != null && costPrice <= 1) || (sellingPrice != null && sellingPrice <= 1)) {
+            return new ResponseEntity<>("costPrice and sellingPrice must be greater than 0", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Inventory> existingItemOptional = repository.findById(id);
+        if (existingItemOptional.isEmpty()) {
+            return new ResponseEntity<>("Item not found", HttpStatus.NOT_FOUND);
+        }
+
+        Inventory existingItem = existingItemOptional.get();
+        if (costPrice != null) existingItem.setCostPrice(costPrice);
+        if (sellingPrice != null) existingItem.setSellingPrice(sellingPrice);
+        existingItem.setLastUpdatedDate();
+
+        repository.save(existingItem);
+        return new ResponseEntity<>("Pricing updated", HttpStatus.OK);
     }
 
     @Override
@@ -113,8 +171,4 @@ public class InventoryServiceImplementation implements InventoryService {
     public ResponseEntity<String> delete(Long id) {
         return null;
     }
-
-    /// Helping Methods
-
-
 }
