@@ -164,11 +164,31 @@ public class InventoryServiceImplementation implements InventoryService {
 
     @Override
     public ResponseEntity<String> updateAttribute(Long id, String attribute) {
-        return null;
+        Optional<Inventory> existingItemOptional = repository.findById(id);
+        if (existingItemOptional.isPresent()) {
+            Inventory existingItem = existingItemOptional.get();
+            try {
+                JsonNode jsonNode = objectMapper.readTree(attribute);
+                existingItem.setAttribute(String.valueOf(jsonNode));
+                existingItem.setLastUpdatedDate();
+                repository.save(existingItem);
+                return new ResponseEntity<>("Attribute updated", HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>("Invalid attribute JSON", HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<>("Item not found", HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
     public ResponseEntity<String> delete(Long id) {
-        return null;
+        Optional<Inventory> itemOptional = repository.findById(id);
+        if (itemOptional.isPresent()) {
+            repository.deleteById(id);
+            return ResponseEntity.ok("Item deleted successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
