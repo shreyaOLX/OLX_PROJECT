@@ -67,12 +67,26 @@ public class InventoryServiceImplementation implements InventoryService {
 
     @Override
     public ResponseEntity<String> get(Long id) {
-        return null;
+        Optional<Inventory> item = repository.findById(id);
+        try {
+            if (item.isPresent()) {
+                String jsonResponse = objectMapper.writeValueAsString(item.get());
+                return ResponseEntity.ok(jsonResponse);
+            } else {
+                return ResponseEntity.status(404).body("Inventory not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
     }
 
     @Override
     public Page<Inventory> getPage(Pageable pageable) {
-        return null;
+        try {
+            return repository.findAll(pageable);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch inventory", e);
+        }
     }
 
     @Override
