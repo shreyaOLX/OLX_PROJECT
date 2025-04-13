@@ -45,5 +45,13 @@ public class InventoryControllerTest {
         inventory.setStatus("CREATED");
     }
 
+    @Test
+    public void testGetById() {
+        when(inventoryService.get(1L)).thenReturn(ResponseEntity.ok("Inventory found"));
 
+        ResponseEntity<String> response = inventoryController.getById(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Inventory found", response.getBody());
+    }
 }
