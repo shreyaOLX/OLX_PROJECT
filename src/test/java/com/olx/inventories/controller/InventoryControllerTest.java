@@ -77,4 +77,14 @@ public class InventoryControllerTest {
 
         assertFalse(response.getBody().isEmpty());
     }
+
+    @Test
+    public void testUpdateInventory() {
+        when(inventoryService.updateInventory(eq(1L), any())).thenReturn(ResponseEntity.ok("Updated"));
+
+        ResponseEntity<String> response = inventoryController.updateInventory(1L, inventory);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Updated", response.getBody());
+    }
 }
