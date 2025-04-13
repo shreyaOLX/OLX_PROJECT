@@ -23,7 +23,7 @@ public class InventoryServiceImplementation implements InventoryService {
 
     private final InventoryValidator validator;
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public InventoryServiceImplementation(InventoryRepository repository,
@@ -33,7 +33,6 @@ public class InventoryServiceImplementation implements InventoryService {
         this.validator = validator;
         this.objectMapper = objectMapper;
     }
-
     @Override
     public ResponseEntity<String> create(Inventory item) {
         ResponseEntity<String> checkValidity = validator.validate(item);
@@ -72,14 +71,14 @@ public class InventoryServiceImplementation implements InventoryService {
             if (item.isPresent()) {
                 String jsonResponse = objectMapper.writeValueAsString(item.get());
                 return ResponseEntity.ok(jsonResponse);
-            } else {
-                return ResponseEntity.status(404).body("Inventory not found");
             }
+            return ResponseEntity.status(404).body("Inventory not found");
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
 
+    /// To get some data together
     @Override
     public Page<Inventory> getPage(Pageable pageable) {
         try {
@@ -101,7 +100,9 @@ public class InventoryServiceImplementation implements InventoryService {
             Inventory existingItem = existingItemOptional.get();
 
             ResponseEntity<String> response = validator.validate(item);
-            if (response != null) return response;
+            if (response != null) {
+                return response;
+            }
 
             existingItem.setType(item.getType());
             existingItem.setLocation(item.getLocation());
@@ -113,9 +114,8 @@ public class InventoryServiceImplementation implements InventoryService {
 
             repository.save(existingItem);
             return new ResponseEntity<>("Item updated", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Item not found", HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>("Item not found", HttpStatus.NOT_FOUND);
     }
 
     @Override
