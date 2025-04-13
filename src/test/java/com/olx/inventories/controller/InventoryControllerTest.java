@@ -54,4 +54,14 @@ public class InventoryControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Inventory found", response.getBody());
     }
+
+    @Test
+    public void testCreateInventory() {
+        when(inventoryService.create(any())).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body("Created"));
+
+        ResponseEntity<String> response = inventoryController.createInventory(inventory);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals("Created", response.getBody());
+    }
 }
