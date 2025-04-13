@@ -66,4 +66,9 @@ public class InventoryController {
         return inventoryService.updateStatus(id, status);
     }
 
+    @PatchMapping("/updatePricing/{id}")
+    public ResponseEntity<String> updatePricing(@PathVariable Long id, @RequestParam(required = false) long costPrice, @RequestParam(required = false) long sellingPrice) {
+        return inventoryService.updatePricing(id, costPrice, sellingPrice);
+    }
+
 }
