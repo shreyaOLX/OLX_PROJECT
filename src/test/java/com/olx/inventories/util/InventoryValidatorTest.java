@@ -43,7 +43,23 @@ class InventoryValidatorTest {
         inventory.setAttribute("{\"VIN\":\"UP38HG0001\"}");
         inventory.setStatus("CREATED");
         ResponseEntity<String> response = inventoryValidator.validate(inventory);
-        assertTrue(response.getStatusCode().is4xxClientError());
+        assertTrue(response.getBody().contains("not a valid type"));
+        assertEquals(403, response.getStatusCodeValue());
+    }
+    @Test
+    void returnErrorForInvalidAttributeJson() {
+        Inventory inventory = new Inventory();
+        inventory.setType(ItemType.CAR.name());
+        inventory.setLocation("Delhi / South");
+        inventory.setCostPrice(100000L);
+        inventory.setSellingPrice(200000L);
+        inventory.setAttribute("invalid-json");
+        inventory.setStatus("CREATED");
+
+        ResponseEntity<String> response = inventoryValidator.validate(inventory);
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCodeValue());
+        assertEquals("Invalid JSON attribute", response.getBody());
     }
 
 
