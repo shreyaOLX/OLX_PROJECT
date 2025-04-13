@@ -32,7 +32,7 @@ public class InventoryController {
     private int itemOnEachPage;
 
     @GetMapping("/items")
-    public ResponseEntity<Page<Inventory>> getByPage(@RequestParam(required = false) int pageNum) {
+    public ResponseEntity<Page<Inventory>> getByPage(@RequestParam(defaultValue = "0") int pageNum){
         try {
             Pageable pageable = PageRequest.of(pageNum, itemOnEachPage);
             Page<Inventory> page = inventoryService.getPage(pageable);
@@ -48,10 +48,8 @@ public class InventoryController {
     }
 
     @PostMapping("/create")
-    private ResponseEntity<String> createInventory(@RequestBody Inventory item){
-
+    public ResponseEntity<String> createInventory(@RequestBody Inventory item){
         return inventoryService.create(item);
-
     }
 
 
