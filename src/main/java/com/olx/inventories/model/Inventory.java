@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 public class Inventory {
@@ -47,7 +49,8 @@ public class Inventory {
         this.status = ItemStatus.CREATED.toString();
     }
 
-    public void setLastUpdatedDate(String s) {
-        this.lastUpdateDate = s;
+    public void setLastUpdatedDate() {
+        this.lastUpdateDate = LocalDateTime.now().toString();
     }
+
 }

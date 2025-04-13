@@ -39,8 +39,8 @@ public class InventoryServiceImplementation implements InventoryService {
         ResponseEntity<String> checkValidity = validator.validate(item);
         if (checkValidity != null) return checkValidity;
 
-        item.setCreationDate(setTodayDateTime());
-        item.setLastUpdatedDate(setTodayDateTime());
+        item.setCreationDate(LocalDateTime.now().toString());
+        item.setLastUpdatedDate();
         item.setStatus();
 
         try {
@@ -53,9 +53,16 @@ public class InventoryServiceImplementation implements InventoryService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
     @Override
     public ResponseEntity<String> getAll() {
-        return null;
+        try {
+            List<Inventory> inventory = repository.findAll();
+            String jsonResponse = objectMapper.writeValueAsString(inventory);
+            return ResponseEntity.ok(jsonResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @Override
@@ -95,8 +102,5 @@ public class InventoryServiceImplementation implements InventoryService {
 
     /// Helping Methods
 
-    private String setTodayDateTime() {
-        return LocalDateTime.now().toString();
-    }
 
 }
