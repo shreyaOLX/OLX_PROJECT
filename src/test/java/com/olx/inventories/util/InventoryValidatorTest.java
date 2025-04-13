@@ -36,8 +36,8 @@ class InventoryValidatorTest {
     @Test
     void returnErrorForInvalidType() {
         Inventory inventory = new Inventory();
-        inventory.setType("InvalidType"); // this must not match anything in ItemType
-        inventory.setLocation("Noida");
+        inventory.setType("InvalidType");
+        inventory.setLocation("Prayagraj");
         inventory.setCostPrice(100000L);
         inventory.setSellingPrice(200000L);
         inventory.setAttribute("{\"VIN\":\"UP38HG0001\"}");
