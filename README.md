@@ -1,185 +1,187 @@
-# 📦 OLX Inventory Management System
+# Inventory Management System
 
-## 🚀 Project Overview
+A robust inventory management system built with Spring Boot that allows tracking and management of inventory items with different types and statuses.
 
-The **OLX Inventory Management System** is a backend service designed to manage the lifecycle of inventory items, particularly focusing on vehicles such as cars. Built with **Spring Boot**, the system offers robust CRUD operations, user authentication via **JWT**, and adheres to clean architectural principles ensuring scalability and maintainability.
+## Project Overview
 
----
+This application provides a comprehensive solution for inventory management with features including:
+- Item tracking with various status options (CREATED, PROCURED, SOLD)
+- Item categorization by type (CAR, BIKE, MOBILE, LAPTOP, SHOES)
+- RESTful API endpoints for inventory operations
+- Data validation and error handling
 
-## 🧩 Features
+## Project Structure
 
-- **Inventory Management**: Comprehensive CRUD operations for inventory items.
-- **Car-Specific Details**: Dedicated handling of car attributes through a separate `CarDetails` entity.
-- **User Authentication**: Secure user registration and login mechanisms using JWT.
-- **Pagination Support**: Efficient data retrieval with paginated responses.
-- **Error Handling**: Consistent and meaningful error responses with appropriate HTTP status codes.
-- **Layered Architecture**: Clear separation of concerns across controllers, services, and repositories.
-- **High Test Coverage**: Designed with a focus on achieving 100% test coverage using JUnit and Mockito.
+```
+com.olx.inventories/
+├── controller
+│   └── InventoryController.java
+├── enum
+│   ├── Constant.java
+│   ├── ItemStatus.java
+│   └── ItemType.java
+├── model
+│   └── Inventory.java
+├── repository
+│   └── InventoryRepository.java
+├── service
+│   ├── InventoryService.java
+│   └── InventoryServiceImplementation.java
+├── util
+│   └── InventoryValidator.java
+└── InventoriesApplication.java
+```
 
----
+## Technology Stack
 
-## 🗄️ Entity Overview
+- **Java**: Core programming language
+- **Spring Boot**: Application framework
+- **Spring Data JPA**: Data access and persistence
+- **Spring MVC**: Web layer and REST controller
+- **Gradle**: Dependency management
+- **JUnit & Mockito**: Testing frameworks
 
-### 1. **Inventory**
+## Future Development Plans
 
-Represents general inventory items.
+### 1. User Module
+- User registration and profile management
+- Role-based access control (Admin, Manager, Staff)
+- User activity logging and audit trails
 
-- `sku` (Primary Key): Unique identifier for the inventory item.
-- `type`: Type of inventory (e.g., "car").
-- `primaryStatus`: Status of the inventory item (`CREATED`, `PROCURED`, `SOLD`).
-- `primaryLocation`: Current location of the inventory item.
-- `costPrice`: Acquisition cost.
-- `sellingPrice`: Selling price.
-- `createdAt` & `updatedAt`: Timestamps for record creation and updates.
-- `createdBy` & `updatedBy`: References to the user responsible for creation and updates.
-- **Relationship**: If `type` is "car", associates with the `CarDetails` entity.
+### 2. Security Implementation
+- JWT authentication and authorization
+- Secure API endpoints
+- Password encryption and security best practices
 
-### 2. **CarDetails**
+### 3. Entity Relationships
+- Supplier management and relationships
+- Warehouse/location entities
+- Order management integration
+- Transaction history
 
-Stores car-specific attributes.
+## Clean Code Practices
 
-- `id` (Primary Key): Unique identifier.
-- `inventorySku` (Foreign Key): Links to the associated `Inventory` item.
-- `vin`: Vehicle Identification Number.
-- `make`: Manufacturer of the car.
-- `model`: Model of the car.
-- `trim`: Specific trim or variant.
-- `year`: Manufacturing year.
+This project adheres to the following clean code principles:
 
-### 3. **User**
+1. **Meaningful Names**: Clear, intention-revealing names for classes, methods, and variables
+2. **Single Responsibility Principle**: Each class has one responsibility
+3. **DRY (Don't Repeat Yourself)**: Code reuse through proper abstraction
+4. **SOLID Principles**: Following object-oriented design principles
+5. **Comprehensive Testing**: Unit tests for all business logic
+6. **Consistent Formatting**: Adherence to Java code style guidelines
+7. **Error Handling**: Proper exception handling and validation
 
-Manages user authentication and authorization.
+## API Documentation
 
-- `id` (Primary Key): Unique user identifier.
-- `email`: User's email address.
-- `password`: Hashed password for secure authentication.
+The Inventory Management System provides a RESTful API for inventory operations:
 
----
+### Inventory API Endpoints
 
-## 🔐 Authentication & Authorization
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET    | `/api/inventory` | Retrieve all inventory items |
+| GET    | `/api/inventory/{id}` | Retrieve a specific inventory item by ID |
+| POST   | `/api/inventory` | Create a new inventory item |
+| PUT    | `/api/inventory/{id}` | Update an existing inventory item |
+| DELETE | `/api/inventory/{id}` | Delete an inventory item |
+| GET    | `/api/inventory/type/{type}` | Get items by type (CAR, BIKE, etc.) |
+| GET    | `/api/inventory/status/{status}` | Get items by status (CREATED, PROCURED, etc.) |
+| GET    | `/api/inventory/search` | Search inventory items by name (query parameter: `name`) |
+| GET    | `/api/inventory/low-stock` | Get items with quantity below threshold |
+| POST   | `/api/inventory/bulk` | Bulk create inventory items |
+| PUT    | `/api/inventory/{id}/status` | Update status of an inventory item |
+| PUT    | `/api/inventory/{id}/quantity` | Update quantity of an inventory item |
 
-- **Registration**: Users can register via the `/users/register` endpoint.
-- **Login**: Authenticate using `/users/login` to receive a JWT.
-- **Protected Routes**: All inventory-related endpoints require a valid JWT in the `Authorization` header.
+### Response Format
 
----
-
-## 📡 API Endpoints
-
-### Inventory Management
-
-| Endpoint                 | Method   | Description                                  |
-|--------------------------|----------|----------------------------------------------|
-| `/inventories`           | `POST`   | Create a new inventory item.                 |
-| `/inventories/{sku}`     | `GET`    | Retrieve details of a specific inventory item by SKU. |
-| `/inventories`           | `GET`    | List all inventory items with pagination support. |
-| `/inventories/{sku}`     | `PATCH`  | Update details of an existing inventory item. |
-| `/inventories/{sku}`     | `DELETE` | Remove an inventory item (if deletion is permitted). |
-
-### User Management
-
-| Endpoint         | Method | Description                  |
-|------------------|--------|------------------------------|
-| `/users/register`| `POST` | Register a new user account. |
-| `/users/login`   | `POST` | Authenticate and receive a JWT. |
-
----
-
-## ⚠️ Error Handling
-
-The system returns structured error responses:
+All API responses follow a consistent format:
 
 ```json
 {
-  "errorCode": "ResourceNotFound",
-  "errorMessage": "The requested inventory item was not found."
+  "status": "SUCCESS",
+  "message": "Operation completed successfully",
+  "data": {
+    // Response data here
+  }
 }
 ```
 
-Common HTTP status codes include:
+### Error Handling
 
-- `200 OK`: Successful operation.
-- `201 Created`: Resource successfully created.
-- `400 Bad Request`: Invalid input or request parameters.
-- `401 Unauthorized`: Missing or invalid authentication token.
-- `404 Not Found`: Requested resource does not exist.
-- `500 Internal Server Error`: An unexpected error occurred on the server.
+Errors are returned with appropriate HTTP status codes and detailed error messages:
 
----
-
-## 📁 Project Structure
-
-```
-inventories/
-├── .gradle/                  # Gradle system files
-├── .idea/                    # IntelliJ project config
-├── gradle/                   # Gradle wrapper
-├── src/
-│   ├── main/
-│   │   ├── java/com/olx/inventories/
-│   │   │   └── InventoriesApplication.java
-│   │   └── resources/
-│   │       ├── static/
-│   │       ├── templates/
-│   │       └── application.properties
-│   └── test/
-│       └── java/com/olx/inventories/
-│           └── InventoriesApplicationTests.java
-├── build.gradle
-├── settings.gradle
-├── gradlew
-├── gradlew.bat
-├── .gitignore
-├── README.md
-└── Interns Project.pdf       # Project brief
+```json
+{
+  "status": "ERROR",
+  "message": "Unable to process request",
+  "errors": [
+    "Validation error 1",
+    "Validation error 2"
+  ]
+}
 ```
 
----
+## Testing Strategy
 
-## 🧪 Testing
+Our testing approach includes:
 
-- **Unit Tests**: Utilize JUnit and Mockito to test individual components.
-- **Integration Tests**: Employ MockMvc to test API endpoints and their interactions.
-- **Coverage Goal**: Strive for 100% test coverage to ensure reliability and robustness.
+1. **Unit Testing**: Testing individual components in isolation
+2. **Integration Testing**: Testing interactions between components
+3. **API Testing**: Ensuring REST endpoints function correctly
+4. **Validation Testing**: Verifying input validation logic
+5. **Edge Case Testing**: Handling boundary and error conditions
 
----
+## Getting Started
 
-## 🛠️ Setup & Installation
+### Prerequisites
+- Java JDK 11 or higher
+- Gradle
+- Your preferred IDE (IntelliJ IDEA, Eclipse, VS Code)
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/shreyaOLX/OLX_PROJECT.git
+### Setup and Installation
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/inventory-management.git
    ```
 
-2. **Navigate to the Project Directory**:
-   ```bash
-   cd OLX_PROJECT
+2. Navigate to the project directory:
+   ```
+   cd inventory-management
    ```
 
-3. **Configure Application Properties**:
-    - Set up your `application.properties` with the necessary database configurations and JWT secrets.
-
-4. **Build the Project**:
-   ```bash
-   ./mvnw clean install
+3. Build the project:
+   ```
+   gradle build
    ```
 
-5. **Run the Application**:
-   ```bash
-   ./mvnw spring-boot:run
+4. Run the application:
+   ```
+   gradle bootRun
    ```
 
-6. **API Documentation**:
-    - Access the Swagger UI at `http://localhost:8080/swagger-ui.html` for interactive API documentation.
+5. Access the application:
+   ```
+   http://localhost:8080
+   ```
 
----
+## Contributing
 
-## ✅ Best Practices
+We welcome contributions to this project. Please follow these steps:
 
-- **Clean Code**: Adherence to SOLID principles and meaningful naming conventions.
-- **DTO Utilization**: Separation between entity models and data transfer objects.
-- **RESTful Design**: Proper use of HTTP verbs and status codes.
-- **Security**: Implementation of JWT for stateless authentication.
-- **Exception Handling**: Centralized management of exceptions to provide consistent responses.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
----
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Authors
+
+- Anuj - Services
+- Shreya - Model
+- Abhishek - User
+- Anurag - Controller
