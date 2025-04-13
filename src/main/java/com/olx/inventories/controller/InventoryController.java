@@ -32,13 +32,13 @@ public class InventoryController {
     private int itemOnEachPage;
 
     @GetMapping("/items")
-    public ResponseEntity<Page<Inventory>> getByPage(@RequestParam(defaultValue = "0") int pageNum){
+    public ResponseEntity<Page<Inventory>> getByPage(@RequestParam(defaultValue = "0") int pageNum) {
         try {
-            Pageable pageable = PageRequest.of(pageNum, itemOnEachPage);
+            Pageable pageable = PageRequest.of(pageNum, 10);  // 10 can be the number of items per page
             Page<Inventory> page = inventoryService.getPage(pageable);
 
             if (page.isEmpty()) {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.notFound().build();  // Optional, if you want to handle empty pages
             }
 
             return ResponseEntity.ok(page);
@@ -46,6 +46,8 @@ public class InventoryController {
             return ResponseEntity.status(500).build();
         }
     }
+
+
 
     @PostMapping("/create")
     public ResponseEntity<String> createInventory(@RequestBody Inventory item){

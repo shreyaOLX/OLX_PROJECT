@@ -52,5 +52,4 @@ public class Inventory {
     public void setLastUpdatedDate() {
         this.lastUpdateDate = LocalDateTime.now().toString();
     }
-
 }
