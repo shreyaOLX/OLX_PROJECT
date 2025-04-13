@@ -5,41 +5,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-public class InventoryService {
-    public ResponseEntity<String> create(Inventory item) {
-        return null;
-    }
+public interface InventoryService {
 
-    public ResponseEntity<String> updateInventory(Long id, Inventory item) {
-        return null;
-    }
+    ResponseEntity<String> create(Inventory item);
 
-    public ResponseEntity<String> updateStatus(Long id, String status) {
-        return null;
-    }
+    ResponseEntity<String> getAll();
 
-    public ResponseEntity<String> updatePricing(Long id, Long costPrice, Long sellingPrice) {
-        return null;
-    }
+    ResponseEntity<String> get(Long id);
 
-    public ResponseEntity<String> updateAttribute(Long id, String attribute) {
-        return null;
-    }
+    Page<Inventory> getPage(Pageable pageable);
 
+    ResponseEntity<String> updateInventory(Long id, Inventory item);
 
-    public ResponseEntity<String> getAll() {
-        return null;
-    }
+    ResponseEntity<String> updateStatus(Long id, String status);
 
-    public ResponseEntity<String> get(Long id) {
-        return null;
-    }
+    ResponseEntity<String> updatePricing(Long id, Long costPrice, Long sellingPrice);
 
-    public Page<Inventory> getPage(Pageable pageable) {
-        return null;
-    }
+    ResponseEntity<String> updateAttribute(Long id, String attribute);
 
-    public ResponseEntity<String> delete(Long id) {
-        return null;
-    }
+    ResponseEntity<String> delete(Long id);
 }
