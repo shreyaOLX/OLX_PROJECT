@@ -79,47 +79,15 @@ The Inventory Management System provides a RESTful API for inventory operations:
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET    | `/api/inventory` | Retrieve all inventory items |
-| GET    | `/api/inventory/{id}` | Retrieve a specific inventory item by ID |
-| POST   | `/api/inventory` | Create a new inventory item |
-| PUT    | `/api/inventory/{id}` | Update an existing inventory item |
-| DELETE | `/api/inventory/{id}` | Delete an inventory item |
-| GET    | `/api/inventory/type/{type}` | Get items by type (CAR, BIKE, etc.) |
-| GET    | `/api/inventory/status/{status}` | Get items by status (CREATED, PROCURED, etc.) |
-| GET    | `/api/inventory/search` | Search inventory items by name (query parameter: `name`) |
-| GET    | `/api/inventory/low-stock` | Get items with quantity below threshold |
-| POST   | `/api/inventory/bulk` | Bulk create inventory items |
-| PUT    | `/api/inventory/{id}/status` | Update status of an inventory item |
-| PUT    | `/api/inventory/{id}/quantity` | Update quantity of an inventory item |
-
-### Response Format
-
-All API responses follow a consistent format:
-
-```json
-{
-  "status": "SUCCESS",
-  "message": "Operation completed successfully",
-  "data": {
-    // Response data here
-  }
-}
-```
-
-### Error Handling
-
-Errors are returned with appropriate HTTP status codes and detailed error messages:
-
-```json
-{
-  "status": "ERROR",
-  "message": "Unable to process request",
-  "errors": [
-    "Validation error 1",
-    "Validation error 2"
-  ]
-}
-```
+| GET    | `/inventories/` | Retrieve all inventory items |
+| GET    | `/inventories/{id}` | Retrieve a specific inventory item by ID |
+| GET    | `/inventories/items` | Get inventory items with pagination (query parameters: `pageNum`, defaults to 0) |
+| POST   | `/inventories/create` | Create a new inventory item |
+| PUT    | `/inventories/update/{id}` | Update an existing inventory item |
+| PATCH  | `/inventories/updateStatus/{id}` | Update status of an inventory item (query parameter: `status`) |
+| PATCH  | `/inventories/updatePricing/{id}` | Update pricing of an inventory item (query parameters: `costPrice`, `sellingPrice`) |
+| PATCH  | `/inventories/updateAttribute/{id}` | Update specific attribute of an inventory item |
+| DELETE | `/inventories/delete/{id}` | Delete an inventory item |
 
 ## Testing Strategy
 
@@ -131,50 +99,6 @@ Our testing approach includes:
 4. **Validation Testing**: Verifying input validation logic
 5. **Edge Case Testing**: Handling boundary and error conditions
 
-## Getting Started
-
-### Prerequisites
-- Java JDK 11 or higher
-- Gradle
-- Your preferred IDE (IntelliJ IDEA, Eclipse, VS Code)
-
-### Setup and Installation
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/inventory-management.git
-   ```
-
-2. Navigate to the project directory:
-   ```
-   cd inventory-management
-   ```
-
-3. Build the project:
-   ```
-   gradle build
-   ```
-
-4. Run the application:
-   ```
-   gradle bootRun
-   ```
-
-5. Access the application:
-   ```
-   http://localhost:8080
-   ```
-
-## Contributing
-
-We welcome contributions to this project. Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -183,5 +107,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Anuj - Services
 - Shreya - Model
-- Abhishek - User
+- Abhishek
 - Anurag - Controller
+
+This project documentation was generated with assistance from GPT
