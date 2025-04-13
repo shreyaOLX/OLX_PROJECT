@@ -53,4 +53,10 @@ public class InventoryController {
         return inventoryService.create(item);
 
     }
+
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateInventory(@PathVariable Long id, @RequestBody Inventory item) {
+        return inventoryService.updateInventory(id, item);
+    }
 }
