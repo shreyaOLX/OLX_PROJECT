@@ -35,7 +35,6 @@ public class InventoryControllerTest {
     public void setUp() {
         inventory = new Inventory();
         inventory.setId(1L);
-        inventory.setVIN("VIN123");
         inventory.setLocation("Delhi");
         inventory.setCreatedBy("admin");
         inventory.setType("car");

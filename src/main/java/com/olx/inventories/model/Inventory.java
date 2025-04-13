@@ -15,8 +15,6 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
-    private String VIN;
-    @Column
     private String location;
     @Column
     private String createdBy;
