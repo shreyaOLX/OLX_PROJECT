@@ -25,7 +25,7 @@ public class InventoryController {
         return inventoryService.getAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<String> getById(@PathVariable Long id) {
         return inventoryService.get(id);
     }

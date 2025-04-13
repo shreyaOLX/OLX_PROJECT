@@ -66,6 +66,7 @@ public class InventoryServiceImplementation implements InventoryService {
 
     @Override
     public ResponseEntity<String> get(Long id) {
+        /// Optional is safer , handles null Exceptions
         Optional<Inventory> item = repository.findById(id);
         try {
             if (item.isPresent()) {
@@ -78,7 +79,6 @@ public class InventoryServiceImplementation implements InventoryService {
         }
     }
 
-    /// To get some data together
     @Override
     public Page<Inventory> getPage(Pageable pageable) {
         try {

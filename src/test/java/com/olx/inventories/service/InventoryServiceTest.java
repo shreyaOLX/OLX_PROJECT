@@ -7,6 +7,7 @@ import com.olx.inventories.util.InventoryValidator;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
 
 import static org.mockito.Mockito.mock;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,14 @@ class InventoryServiceTest {
     @Test
     void createAndCheckInInventory() {
         Inventory inventory = new Inventory();
-
+        inventory.setType("car");
+        inventory.setLocation("Delhi");
+        inventory.setCostPrice(100000L);
+        inventory.setSellingPrice(150000L);
+        inventory.setAttribute("{\"color\":\"red\"}");
+        inventory.setStatus("CREATED");
+        ResponseEntity<String> response = service.create(inventory);
+        assertEquals(200, response.getStatusCode().value());
     }
 
     @Test
