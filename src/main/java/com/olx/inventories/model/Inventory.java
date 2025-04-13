@@ -12,6 +12,8 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
+    private String VIN;
+    @Column
     private String location;
     @Column
     private String createdBy;
@@ -29,13 +31,16 @@ public class Inventory {
     private String attribute;
     @Column
     private String status;
-    public JsonNode setAttribute(JsonNode attribute) {
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
+    }
+    public JsonNode getParsedAttribute() {
         try{
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readTree(this.attribute);
         }
         catch (Exception e){
-            throw new RuntimeException("unable to ");
+            throw new RuntimeException("Unable to parse attribute JSON", e);
         }
     }
     public void setStatus() {
