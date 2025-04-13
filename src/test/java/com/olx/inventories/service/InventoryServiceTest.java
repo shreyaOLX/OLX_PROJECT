@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InventoryValidatorTest {
@@ -19,7 +21,6 @@ class InventoryValidatorTest {
 
     @Test
     void returnNullWhenInventoryIsValid() {
-        // Arrange
         Inventory inventory = new Inventory();
         inventory.setType(ItemType.CAR.name());
         inventory.setLocation("Delhi");
@@ -35,16 +36,13 @@ class InventoryValidatorTest {
                 """);
         inventory.setStatus("CREATED");
 
-        // Act
         ResponseEntity<String> response = inventoryValidator.validate(inventory);
 
-        // Assert
         assertNull(response);
     }
 
     @Test
     void returnErrorForInvalidType() {
-        // Arrange
         Inventory inventory = new Inventory();
         inventory.setType("InvalidType");
         inventory.setLocation("Prayagraj");
@@ -53,18 +51,15 @@ class InventoryValidatorTest {
         inventory.setAttribute("{\"VIN\":\"UP38HG0001\"}");
         inventory.setStatus("CREATED");
 
-        // Act
         ResponseEntity<String> response = inventoryValidator.validate(inventory);
 
-        // Assert
         assertNotNull(response);
-        assertTrue(response.getBody().contains("not a valid type"));
+        assertTrue(Objects.requireNonNull(response.getBody()).contains("not a valid type"));
         assertEquals(403, response.getStatusCode().value());
     }
 
     @Test
     void returnErrorForInvalidAttributeJson() {
-        // Arrange
         Inventory inventory = new Inventory();
         inventory.setType(ItemType.CAR.name());
         inventory.setLocation("Delhi / South");
@@ -73,18 +68,15 @@ class InventoryValidatorTest {
         inventory.setAttribute("invalid-json");
         inventory.setStatus("CREATED");
 
-        // Act
         ResponseEntity<String> response = inventoryValidator.validate(inventory);
 
-        // Assert
         assertNotNull(response);
         assertEquals(400, response.getStatusCode().value());
-        assertTrue(response.getBody().contains("Invalid attribute JSON"));
+        assertTrue(Objects.requireNonNull(response.getBody()).contains("Invalid attribute JSON"));
     }
 
     @Test
     void returnErrorForInvalidStatus() {
-        // Arrange
         Inventory inventory = new Inventory();
         inventory.setType(ItemType.CAR.name());
         inventory.setLocation("Delhi / North");
@@ -93,18 +85,15 @@ class InventoryValidatorTest {
         inventory.setAttribute("{\"VIN\":\"UP38HG0001\"}");
         inventory.setStatus("DELIVERED");
 
-        // Act
         ResponseEntity<String> response = inventoryValidator.validate(inventory);
 
-        // Assert
         assertNotNull(response);
         assertEquals(400, response.getStatusCode().value());
-        assertTrue(response.getBody().contains("Invalid status"));
+        assertTrue(Objects.requireNonNull(response.getBody()).contains("Invalid status"));
     }
 
     @Test
     void returnErrorForNegativePrices() {
-        // Arrange
         Inventory inventory = new Inventory();
         inventory.setType(ItemType.CAR.name());
         inventory.setLocation("Delhi");
@@ -113,12 +102,10 @@ class InventoryValidatorTest {
         inventory.setAttribute("{\"VIN\":\"UP38HG0001\"}");
         inventory.setStatus("CREATED");
 
-        // Act
         ResponseEntity<String> response = inventoryValidator.validate(inventory);
 
-        // Assert
         assertNotNull(response);
         assertEquals(400, response.getStatusCode().value());
-        assertFalse(response.getBody().contains("Prices cannot be negative"));
+        assertFalse(Objects.requireNonNull(response.getBody()).contains("Prices cannot be negative"));
     }
 }
