@@ -107,7 +107,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Anuj - Services
 - Shreya - Model
-- Abhishek
+- Abhishek - User
 - Anurag - Controller
 
 This project documentation was generated with assistance from GPT
