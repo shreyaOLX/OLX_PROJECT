@@ -61,6 +61,19 @@ class InventoryValidatorTest {
         assertEquals(400, response.getStatusCodeValue());
         assertEquals("Invalid JSON attribute", response.getBody());
     }
+    @Test
+    void returnErrorForInvalidStatus() {
+        Inventory inventory = new Inventory();
+        inventory.setType(ItemType.CAR.name());
+        inventory.setLocation("Delhi / North");
+        inventory.setCostPrice(100000L);
+        inventory.setSellingPrice(200000L);
+        inventory.setAttribute("{\"VIN\":\"UP38HG0001\"}");
+        inventory.setStatus("DELIVERED");
 
-
+        ResponseEntity<String> response = inventoryValidator.validate(inventory);
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCodeValue());
+        assertEquals("Invalid status. Status can only be PROCURED or SOLD.", response.getBody());
+    }
 }
