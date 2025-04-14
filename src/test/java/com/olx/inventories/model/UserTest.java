@@ -49,4 +49,5 @@ public class UserTest {
         String expected = "User(id=1, name=Jane Doe, email=jane.doe@example.com, password=securepass)";
         assertEquals(expected, user.toString());
     }
+
 }
